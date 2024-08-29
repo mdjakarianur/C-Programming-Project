@@ -1,3 +1,7 @@
+/*Full System Code
+Digital Money Management System. Code & Output Step by Step
+Project Title: Digital Money Management*/
+
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
@@ -13,9 +17,7 @@ int with_amt,cc,ch;
 void deposit_money();
 void withdraw_money();
 void AccountDetails();
-/*Full System Code
-Money Management System Code & Output Step by Step
-Project Title: Money Management Solution*/
+
 void ExitProgram();
 void divider()
 {
@@ -26,7 +28,7 @@ void divider()
  }
 }
 int main(){
- system("color B0");
+system("color A0");
 struct user user;
 char filename[50],phone[50],password[50],phone2[50];
 FILE *fp;
