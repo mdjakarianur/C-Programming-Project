@@ -1,6 +1,6 @@
-/*Full System Code
-Digital Money Management System. Code & Output Step by Step
-Project Title: Digital Money Management
+/*
+Full System Code
+Project Title: Dynamic Banking System
 */
 
 #include <stdio.h>
@@ -9,52 +9,47 @@ Project Title: Digital Money Management
 #include <conio.h>
 
 struct user {
-    char name[50];
-    char account_number[50];
     char phone[50];
     char password[50];
+    char name[50];
+    char account_number[50];
     int balance;
 };
 
-void deposit_money(struct user *current_user);
-void withdraw_money(struct user *current_user);
-void account_details(const struct user *current_user);
-void exit_program();
-void divider();
+int balance=0;
+
 void register_user();
 void login_user();
 void search_account();
-void save_user_data(const char *filename, const struct user *current_user);
-
-void divider() {
-    printf("\n\t\t\t\t\t");
-    for (int i = 0; i < 50; i++) {
-        printf("-");
-    }
-    printf("\n");
-}
+void deposit_money();
+void withdraw_money();
+void account_details();
+void account_update();
+void account_delete();
+void exit_program();
+void divider();
 
 int main() {
-    int opt;
     system("color A0");
+    int option;
+    system("cls");
 
     while (1) {
+        printf("\n\n\n\n\t\t\t\t\t*Dynamic Banking System*\t\t\t\t\t");
+        printf("\n\n\n\t\t\t\t 1. Login Account\t\t\t\t");
+        printf("\n\n\n\t\t\t\t 2. Register Account\t\t\t\t");
+        printf("\n\n\n\t\t\t\t 3. Search Account\t\t\t\t");
+        printf("\n\n\n\t\t\t\t 4. Exit From System\t\t\t\t");
+        printf("\n\n\n\t\t\t\t Enter Your Choice: ");
+        scanf("%d", &option);
         system("cls");
-        printf("\n\n\n\n\t\t\t\t\t\t\t*Digital Money Management*\t\t\t\t\t\n\n");
 
-        printf("\n\n\n\t\t\t\t 1. Login your account\t\t\t\t");
-        printf("\n\n\n\t\t\t\t 2. Register one account\t\t\t\t");
-        printf("\n\n\n\t\t\t\t 3. Search your account by phone number\t\t");
-        printf("\n\n\n\t\t\t\t 4. Exit\n\n\n");
-        printf("\n\t\t\t\t\tEnter your choice: ");
-        scanf("%d", &opt);
-
-        switch (opt) {
+        switch (option) {
             case 1:
                 login_user();
                 break;
             case 2:
-                register_user();
+                 register_user();
                 break;
             case 3:
                 search_account();
@@ -63,22 +58,19 @@ int main() {
                 exit_program();
                 return 0;
             default:
-                printf("\n\t\t\t\t\tInvalid choice. Try again.\n");
-                getch();
+                printf("\n\t\t\t\t\t*Invalid choice, Try Again!*");
+                break;
         }
     }
     return 0;
 }
 
-void register_user() {
+void register_user(){
     struct user new_user;
     char filename[50];
     FILE *fp;
 
-    system("cls");
-    printf("\n\n\n\n\t\t\t\t\t\t\t*Digital Money Management*\t\t\t\t\t\n\n\n");
-
-    printf("\n\t\t\t\t\tEnter your name:\t\t");
+    printf("\n\t\t\t\t\tEnter your name:\t");
     scanf("%s", new_user.name);
     printf("\n\t\t\t\t\tEnter your phone number:\t");
     scanf("%s", new_user.phone);
@@ -86,175 +78,178 @@ void register_user() {
     scanf("%s", new_user.account_number);
     printf("\n\t\t\t\t\tEnter your new password:\t");
     scanf("%s", new_user.password);
-    printf("\n\n\t\t\t\t\tYour phone number is your new account number : %s\t\n\n",new_user.account_number);
     new_user.balance = 0;
 
     strcpy(filename, new_user.phone);
-    fp = fopen(strcat(filename, ".dat"), "wb");
-    if (fp != NULL) {
-        fwrite(&new_user, sizeof(struct user), 1, fp);
-        fclose(fp);
-        printf("\n\t\t\t\t\tSuccessfully registered\n\n");
-    } else {
-        printf("\n\t\t\t\t\tError in registration\n\n");
-    }
-    getch();
+    fp = fopen(strcat(filename, ".dat"),"w");
+    fwrite(&new_user, sizeof(new_user),1, fp);
+    fclose(fp);
+
+    printf("\n\t\t\t\t\tSuccessfully registered\n\n");
 }
 
 void login_user() {
-    struct user user;
+    struct user bankingUser;
     char filename[50], phone[50], password[50];
     FILE *fp;
+    int choice;
+    char cont = 'y';
 
-    system("cls");
-    printf("\n\n\n\n\t\t\t\t\t\t\t*Digital Money Management*\t\t\t\t\t\n\n\n");
-
-    printf("\n\n\t\t\t\t\tPhone No.:\t");
+    printf("\n\n\t\t\t\t\tPhone No:\t");
     scanf("%s", phone);
     printf("\n\t\t\t\t\tPassword:\t");
     scanf("%s", password);
 
     strcpy(filename, phone);
-    fp = fopen(strcat(filename, ".dat"), "rb");
+    fp = fopen(strcat(filename, ".dat"), "r");
 
     if (fp == NULL) {
-        printf("\n\t\t\t\t\tAccount number not registered\n");
-        getch();
+        printf("\n\t\t\t\t\tPhone number not registered\n");
+        return;
+    }
+
+    fread(&bankingUser, sizeof(struct user), 1, fp);
+    fclose(fp);
+
+    if (strcmp(password, bankingUser.password) != 0) {
+        printf("\n\t\t\t\t\tInvalid password\n");
+        return;
+    }
+
+    while (cont == 'y') {
+        system("cls");
+        printf("\n\t\t\t\t\tBanking MENU\n");
+        divider();
+        printf("\n\t\t\t\t\t1. Deposit Money\n");
+        printf("\n\t\t\t\t\t2. Withdraw Money\n");
+        printf("\n\t\t\t\t\t3. Account details\n");
+        printf("\n\t\t\t\t\t4. Account Update\n");
+        printf("\n\t\t\t\t\t5. Account Delete\n");
+        printf("\n\t\t\t\t\t6. Logout\n");
+
+        printf("\n\n\t\t\t\t\tEnter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                deposit_money(&bankingUser);
+                break;
+            case 2:
+                withdraw_money(&bankingUser);
+                break;
+            case 3:
+                account_details(&bankingUser);
+                break;
+            case 4:
+                account_update(&bankingUser);
+                break;
+            case 5:
+                account_delete(&bankingUser);
+                break;
+            case 6:
+                return;
+            default:
+                printf("\n\t\t\t\t\t*Invalid choice, Try Again!*");
+                break;
+        }
+        printf("\n\n\t\t\t\t\tDo you want to continue? [y/n]: ");
+        scanf(" %c", &cont);
+    }
+}
+
+void deposit_money(struct user *bankingUser) {
+    int diposit_amount;
+    FILE *fb = fopen("userAccount.txt", "w");
+    printf("\n\t\t\t\t\t*DEPOSITING MONEY*\n");
+    divider();
+    printf("\n\n\t\t\t\t\tEnter the amount you want to deposit:");
+    scanf("%d", &diposit_amount);
+    balance += diposit_amount;
+    printf("\n\t\t\t\t\t**Money Deposited\n");
+    printf("\n\t\t\t\t\tNow balance : %d\n", balance);
+    fprintf(fb, "\n\n\t\t\t\t\tTk%d had been deposited to your account \n", diposit_amount);
+    fclose(fb);
+    printf("\n\t\t\t\t\tPress any key....\n");
+    getch();
+}
+
+void withdraw_money(struct user *bankingUser) {
+    int withdraw_amount;
+    FILE *fb = fopen("userAccount.txt", "w");
+    printf("\n\t\t\t\t\t*DEPOSITING MONEY*\n");
+    divider();
+    printf("\n\n\t\t\t\t\tEnter the amount you want to deposit:");
+    scanf("%d", &withdraw_amount);
+    balance -= withdraw_amount;
+    printf("\n\t\t\t\t\t**Money Deposited\n");
+    printf("\n\t\t\t\t\tNow balance : %d\n", balance);
+    fprintf(fb, "\n\n\t\t\t\t\tTk%d had been deposited to your account \n", withdraw_amount);
+    fclose(fb);
+    printf("\n\t\t\t\t\tPress any key....\n");
+    getch();
+}
+
+void account_details(struct user *user){
+    printf("\n\t\t\t\t\tACCOUNT DETAILS\n");
+    divider();
+    printf("\n\n\t\t\t\t\tName: %s\n", user->name);
+    printf("\n\t\t\t\t\tAccount No.: %s\n", user->account_number);
+    printf("\n\t\t\t\t\tPhone No.: %s\n", user->phone);
+    printf("\n\t\t\t\t\tBalance: %d\n", user->balance);
+    printf("\n\n\t\t\t\t\tPress any key to return to menu...");
+    getch();
+}
+
+void account_update (struct user *user){
+int update;
+    FILE *fp;
+    char filename[50];
+
+    printf("\n\n\t\t\t\t\tEnter the delete account number: ");
+    scanf("%d", &update);
+}
+
+void account_delete (struct user *user){
+int delete;
+    FILE *fp;
+    char filename[50];
+
+    printf("\n\n\t\t\t\t\tEnter the delete account number: ");
+    scanf("%d", &delete);
+}
+
+void search_account() {
+    struct user user;
+    char phone[50], filename[50];
+    FILE *fp;
+
+    printf("\n\n\t\t\t\t\tEnter the phone number to search: ");
+    scanf("%s", phone);
+
+    strcpy(filename, phone);
+    fp = fopen(strcat(filename, ".dat"), "r");
+
+    if (fp == NULL) {
+        printf("\n\t\t\t\t\tAccount not found\n");
         return;
     }
 
     fread(&user, sizeof(struct user), 1, fp);
     fclose(fp);
 
-    if (strcmp(password, user.password) != 0) {
-        printf("\n\t\t\t\t\tInvalid password\n");
-        getch();
-        return;
-    }
-
-    char cont = 'y';
-    while (cont == 'y') {
-        system("cls");
-        printf("\n\t\t\t\t\tMENU\n");
-        divider();
-        printf("\n\t\t\t\t\t1. Deposit Money\n");
-        printf("\n\t\t\t\t\t2. Withdraw Money\n");
-        printf("\n\t\t\t\t\t3. Account details\n");
-        printf("\n\t\t\t\t\t4. Exit\n");
-        printf("\n\t\t\t\t\tEnter your choice: ");
-        int choice;
-        scanf("%d", &choice);
-
-        switch (choice) {
-            case 1:
-                system("cls");
-                deposit_money(&user);
-                save_user_data(filename, &user);
-                break;
-            case 2:
-                system("cls");
-                withdraw_money(&user);
-                save_user_data(filename, &user);
-                break;
-            case 3:
-                system("cls");
-                account_details(&user);
-                break;
-            case 4:
-                system("cls");
-                exit_program();
-                return;
-            default:
-                printf("\n\t\t\t\t\t*Invalid choice*\n");
-        }
-        printf("\n\n\t\t\t\t\tDo you want to continue? [y/n]: ");
-        scanf(" %c", &cont);
-    }
-    printf("\n\n\t\t\t\t\t*Thank you for using the system*\n\n");
-    getch();
-}
-
-void deposit_money(struct user *current_user) {
-    int dip_amt;
-    printf("\n\t\t\t\t\t*DEPOSITING MONEY*\n");
-    divider();
-    printf("\n\n\t\t\t\t\tEnter the amount you want to deposit: ");
-    scanf("%d", &dip_amt);
-    current_user->balance += dip_amt;
-    printf("\n\t\t\t\t\t**Money Deposited\n");
-    printf("\n\t\t\t\t\tCurrent balance: %d\n", current_user->balance);
-    printf("\n\t\t\t\t\tPress any key....\n");
-    getch();
-}
-
-void withdraw_money(struct user *current_user) {
-    int with_amt;
-    printf("\n\t\t\t\t\t*WITHDRAWING MONEY*\n");
-    divider();
-    printf("\n\n\t\t\t\t\tEnter the amount you want to withdraw: ");
-    scanf("%d", &with_amt);
-    if (current_user->balance < with_amt) {
-        printf("\n\t\t\t\t\t*Insufficient balance*\n");
-    } else {
-        current_user->balance -= with_amt;
-        printf("\n\t\t\t\t\t*Money Withdrawn*\n");
-        printf("\n\t\t\t\t\tCurrent balance: %d\n", current_user->balance);
-    }
-    printf("\n\t\t\t\t\tPress any key....\n");
-    getch();
-}
-
-void account_details(const struct user *current_user) {
-    printf("\n\t\t\t\t\tACCOUNT DETAILS\n");
-    divider();
-    printf("\n\n\t\t\t\t\tName: %s\n", current_user->name);
-    printf("\n\t\t\t\t\tAccount No.: %s\n", current_user->account_number);
-    printf("\n\t\t\t\t\tPhone No.: %s\n", current_user->phone);
-    printf("\n\t\t\t\t\tTotal balance: %d\n", current_user->balance);
-    printf("\n\n\t\t\t\t\tPress any key to continue...\n");
-    getch();
+    printf("\n\t\t\t\t\tAccount found\n");
+    printf("\n\t\t\t\t\tName: %s\n", user.name);
+    printf("\n\t\t\t\t\tAccount No.: %s\n", user.account_number);
+    printf("\n\t\t\t\t\tPhone No.: %s\n", user.phone);
+    printf("\n\t\t\t\t\tBalance: %d\n", user.balance);
 }
 
 void exit_program() {
-    printf("\n\n\t\t\t\t\tThank you for using Digital Money Management System.\n");
-    printf("\n\t\t\t\t\tPress any key to exit.");
-    getch();
+    printf("\n\n\n\t\t\t\t\tThanks for using Dynamic Banking System\n\n");
 }
-
-void search_account() {
-    struct user user_data;
-    char search_input[50];
-    int found = 0;
-
-    printf("\n\t\t\tEnter your phone number to search: ");
-    scanf("%s", search_input);
-
-    FILE *fp = fopen(strcat(search_input, ".dat"), "rb");
-    if (fp != NULL) {
-        fread(&user_data, sizeof(struct user), 1, fp);
-        fclose(fp);
-        printf("\n\t\t\tAccount found:\n");
-        printf("\n\t\t\tName: %s\n", user_data.name);
-        printf("\t\t\tAccount Number: %s\n", user_data.account_number);
-        printf("\t\t\tPhone: %s\n", user_data.phone);
-        printf("\t\t\tBalance: %d\n", user_data.balance);
-        found = 1;
-    }
-
-    if (!found) {
-        printf("\n\t\t\tAccount '%s' not found.\n", search_input);
-    }
-    printf("\n\t\t\tPress any key to return to main menu...");
-    getch();
-}
-
-void save_user_data(const char *filename, const struct user *current_user) {
-    FILE *fp = fopen(filename, "wb");
-
-    if (fp != NULL) {
-        fwrite(current_user, sizeof(struct user), 1, fp);
-        fclose(fp);
-    } else {
-        printf("\n\t\t\tError updating user data\n");
+void divider() {
+    printf("\n\t\t\t\t\t");
+    for (int i = 0; i < 50; i++) {
+        printf("-");
     }
 }
