@@ -1,6 +1,6 @@
 /*
 Full System Code
-Project Title: Dynamic Banking System
+Project Title: Digital Money Management
 */
 
 #include <stdio.h>
@@ -30,7 +30,7 @@ void exit_program();
 void divider();
 
 int main() {
-    system("color A0");
+    system("color F1");
     int option;
     system("cls");
 
@@ -201,21 +201,93 @@ void account_details(struct user *user){
 }
 
 void account_update (struct user *user){
-int update;
+struct user user_data;
+    char filename[50], phone[50];
     FILE *fp;
-    char filename[50];
 
-    printf("\n\n\t\t\t\t\tEnter the delete account number: ");
-    scanf("%d", &update);
+    printf("\n\t\t\tEnter the phone number of the account to update: ");
+    scanf("%s", phone);
+
+    strcpy(filename, phone);
+    strcat(filename, ".dat");
+
+    fp = fopen(filename, "rb");
+    if (fp == NULL) {
+        printf("\n\t\t\tAccount not found.\n");
+        getch();
+        return;
+    }
+
+    fread(&user_data, sizeof(struct user), 1, fp);
+    fclose(fp);
+
+    int choice;
+    printf("\n\t\t\tWhat would you like to update?\n");
+    printf("\n\t\t\t1. Account Name\n");
+    printf("\n\t\t\t2. Phone Number\n");
+    printf("\n\t\t\t3. Account Password\n");
+    printf("\n\t\t\tEnter your choice: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+        case 1:
+            printf("\n\t\t\tEnter new Account Name: ");
+            scanf("%s", user_data.name);
+            strcpy(user_data.account_number, user_data.name);
+            printf("\n\t\t\tAccount Name updated.\n");
+            break;
+        case 2:
+            printf("\n\t\t\tEnter new phone number: ");
+            scanf("%s", user_data.phone);
+            strcpy(user_data.account_number, user_data.phone);
+            printf("\n\t\t\tPhone number updated.\n");
+            break;
+
+        case 3:
+            printf("\n\t\t\tEnter new password: ");
+            scanf("%s", user_data.password);
+            printf("\n\t\t\tPassword updated.\n");
+            break;
+
+        default:
+            printf("\n\t\t\tInvalid choice.\n");
+            return;
+    }
+
+    remove(filename); // Delete old file
+    strcpy(filename, user_data.phone);
+    strcat(filename, ".dat");
+
+    fp = fopen(filename, "wb");
+    if (fp != NULL) {
+        fwrite(&user_data, sizeof(struct user), 1, fp);
+        fclose(fp);
+        printf("\n\t\t\tAccount updated successfully.\n");
+    } else {
+        printf("\n\t\t\tError updating account.\n");
+    }
+
+    getch();
 }
 
 void account_delete (struct user *user){
 int delete;
-    FILE *fp;
+     char phone[50];
     char filename[50];
 
-    printf("\n\n\t\t\t\t\tEnter the delete account number: ");
-    scanf("%d", &delete);
+    printf("\n\t\t\tEnter the phone number of the account to delete: ");
+    scanf("%s", phone);
+
+    strcpy(filename, phone);
+    strcat(filename, ".dat");
+
+    if (remove(filename) == 0) {
+        printf("\n\t\t\tAccount deleted successfully.\n");
+    } else {
+        printf("\n\t\t\tError: Account not found or unable to delete.\n");
+    }
+
+    getch();
 }
 
 void search_account() {
