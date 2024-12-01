@@ -1,7 +1,7 @@
 
 /*
     Full System Code
-    Project Title: Digital Money Manager
+    Project Title: Digital Money Management System
 */
 
 // header file
@@ -142,7 +142,7 @@ void main_menu()
     {
         system("cls");
 
-        printf("\n\n\n\t\t\t\t\t\t*** Digital Money Manager ***\n");
+        printf("\n\n\n\t\t\t\t\t\t*** Digital Money Management System ***\n");
 
         divider();
 
@@ -213,8 +213,8 @@ void login_user()
 
             divider();
 
-            printf("\n\t\t\t\t\t\t 1. Deposit Money\n");
-            printf("\n\t\t\t\t\t\t 2. Withdraw Money\n");
+            printf("\n\t\t\t\t\t\t 1. Deposit Salary\n");
+            printf("\n\t\t\t\t\t\t 2. Withdraw From Salary\n");
             printf("\n\t\t\t\t\t\t 3. View Account Report\n");
             printf("\n\t\t\t\t\t\t 4. View Total Transactions\n");
             printf("\n\t\t\t\t\t\t 5. View Account Details\n");
@@ -291,7 +291,7 @@ void register_user()
         printf("\n\t\t\t\t\t\t Enter new password:  ");
         scanf("%s", new_user.password);
 
-        strcpy(new_user.account_number, new_user.phone); // Phone number as account number
+        strcpy(new_user.account_number, new_user.phone);
         new_user.balance = 0;
 
         save_user_data(new_user);
@@ -449,6 +449,7 @@ struct user withdraw_money(struct user current_user)
         time_t t = time(NULL);
         struct tm *tm_info = localtime(&t);
         strftime(date_str, sizeof(date_str), "%Y-%m-%d", tm_info);
+
         int day, month, year;
         sscanf(date_str, "%d-%d-%d", &year, &month, &day);
 
@@ -1507,13 +1508,8 @@ Digital Money Manager Project by
 
 01. Name: Md Jakaria Nur | ID: 232-35-252
 02. Name: Sami Ansari    | ID: 232-35-176
-03. Name: Monira Islam   | ID: 232-35-017
+03. Monira Islam         | ID: 232-35-017
 
 */
 
 // The System Code End
-// Thanks for your time!
-
-
-
-
